@@ -27,7 +27,9 @@ tasks.test {
 }
 
 publishing {
-    create<MavenPublication>("maven") {
-        from(components["java"])
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
     }
 }
