@@ -14,6 +14,9 @@ repositories {
 }
 
 dependencies {
+    // Logging
+    compileOnly("org.slf4j:slf4j-api:2.0.13")
+
     // Annotations
     compileOnly("org.jetbrains:annotations:24.0.0")
 

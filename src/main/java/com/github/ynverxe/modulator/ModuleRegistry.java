@@ -9,13 +9,24 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
 
 public class ModuleRegistry {
 
+  private final @NotNull Logger logger;
   private final Map<String, ModuleContainer> containers = new ConcurrentHashMap<>();
   private volatile FailedExecutionStrategy failedExecutionStrategy = (groupKey, failed, error, scope) -> {};
+
+  public ModuleRegistry(@NotNull Logger logger) {
+    this.logger = requireNonNull(logger, "logger");
+  }
+
+  public ModuleRegistry() {
+    this(LoggerFactory.getLogger(ModuleRegistry.class));
+  }
 
   public void loadModuleGroup(@NotNull ModuleGroupProvider moduleGroupProvider) {
     String key = moduleGroupProvider.key();
@@ -74,7 +85,7 @@ public class ModuleRegistry {
 
   private List<Module> executeModules(ModuleContainer container, ExecutionScope scope) {
     List<Module> failedModules = new ArrayList<>();
-    ExecutionContext context = new ExecutionContext(container, this);
+    ExecutionContext context = new ExecutionContext(container, this, logger);
     Collection<Module> modules = container.modules().values();
 
     for (Module module : modules) {
@@ -82,7 +93,13 @@ public class ModuleRegistry {
         scope.executor().accept(module, context);
       } catch (Throwable e) {
         failedModules.add(module);
-        if (module.isOptional()) continue;
+
+        if (module.isOptional()) {
+          logger.error("A Module of group '" + container.key() + "' "
+              + "caused an exception", e);
+
+          continue;
+        }
 
         failedExecutionStrategy.handle(container.key(), module, e, scope);
 
