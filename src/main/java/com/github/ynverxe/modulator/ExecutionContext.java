@@ -3,7 +3,9 @@ package com.github.ynverxe.modulator;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-public class ExecutionContext {
+import java.util.Map;
+
+public class ExecutionContext implements ModuleAccess {
 
   private final @NotNull ModuleContainer mateModules;
   private final @NotNull ModuleRegistry registry;
@@ -26,5 +28,10 @@ public class ExecutionContext {
 
   public @NotNull Logger logger() {
     return logger;
+  }
+
+  @Override
+  public @NotNull Map<Class<? extends Module>, Module> modules() {
+    return mateModules.modules();
   }
 }
