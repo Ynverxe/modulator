@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +78,10 @@ public class ModuleRegistry {
     return Optional.ofNullable(containers.get(key));
   }
 
-  public void failedExecutionStrategy(@NotNull FailedExecutionStrategy failedExecutionStrategy) {
+  @Contract("_ -> this")
+  public ModuleRegistry failedExecutionStrategy(@NotNull FailedExecutionStrategy failedExecutionStrategy) {
     this.failedExecutionStrategy = requireNonNull(failedExecutionStrategy, "failedExecutionStrategy");
+    return this;
   }
 
   public @NotNull FailedExecutionStrategy failedExecutionStrategy() {
