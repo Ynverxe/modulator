@@ -28,7 +28,7 @@ public class ModuleRegistry {
     this(LoggerFactory.getLogger(ModuleRegistry.class));
   }
 
-  public void loadModuleGroup(@NotNull ModuleGroupProvider moduleGroupProvider) {
+  public @NotNull ModuleContainer loadModuleGroup(@NotNull ModuleGroupProvider moduleGroupProvider) {
     String key = moduleGroupProvider.key();
     requireNonNull(key, "key");
 
@@ -47,6 +47,7 @@ public class ModuleRegistry {
     }
 
     this.containers.put(key, container);
+    return container;
   }
 
   public boolean reloadModules(@NotNull String groupKey) {
