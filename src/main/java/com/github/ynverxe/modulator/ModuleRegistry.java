@@ -110,7 +110,7 @@ public class ModuleRegistry {
 
         throw new ModuleExecutionException(
             "Non-optional Module '"
-                + modules.getClass()
+                + module.getClass()
                 + "' from group "
                 + "'"
                 + container.key()
